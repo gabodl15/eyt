@@ -1,0 +1,76 @@
+{% extends 'layouts/app.html' %}
+
+{% block content %}
+    <h4>Cursos registrados</h4>
+    <table class="uk-table uk-table-small uk-table-divider">
+        <caption></caption>
+        <tbody>
+        {% for course in courses %}
+            <tr>
+              <td class="uk-table-shrink"><a href="{% url 'courses.list' id=course.id %}">{{ course }}</a></td>
+              <td class="uk-table-shrink">
+                  <progress class="uk-progress" value="{{ course.percentage }}" max="100"></progress>
+              </td>
+              <td class="uk-table-shrink">{{ course.num_videos }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <form class="uk-form-horizontal uk-margin-large">
+        <fieldset class="uk-fieldset">
+            <div class="uk-margin">
+                <label class="uk-form-label" for="url">Url</label>
+                <div class="uk-form-controls">
+                    <input id='url' class="uk-input" type="text" placeholder="URL" aria-label="Input">
+                </div>
+            </div>
+        </fieldset>
+        <button type="button" onclick="enviarSolicitud()" class="uk-button uk-button-primary uk-align-right">Enviar</button>
+    </form>
+
+    <div id='youtube_information' class="">
+
+    </div>
+
+
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+    function enviarSolicitud() {
+      event.preventDefault();
+      const urlInput = document.getElementById('url');
+      const urlValue = urlInput.value;
+      const url = "{% url 'courses.check' %}";
+      const youtubeInformationDiv = document.getElementById('youtube_information');
+
+      fetch(url, {
+          method: 'POST', //
+          headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': '{{ csrf_token }}', //
+          },
+          body: JSON.stringify({url: urlValue}), //
+      })
+        .then(response => response.json())
+        .then(data => {
+            if (data.playlist == 'ok'){
+              youtubeInformationDiv.innerHTML = `
+                  <form action="{% url 'courses.add' %}" method="GET">
+                      <input type="text" name="url" value=${urlValue}>
+                      <p>Playlist: ${data.title}</p>
+                      <p>Número de videos: ${data.num_videos}</p>
+                      <p>Propietario: ${data.owner}</p>
+                      <button type="submit" name="button">Enviar</button>
+                  </form>
+              `;
+            }else {
+                youtubeInformationDiv.innerHTML = 'Error al obtener la información de la playlist';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends 'layouts/app.html' %}
+
+{% block content %}
+    <br>
+    <div id="player"></div>
+    <br>
+{% endblock %}
+
+{% block script %}
+<script src="https://www.youtube.com/iframe_api"></script>
+<script>
+    var player;
+    function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+            height: '315',
+            width: '560',
+            videoId: '{{ video.youtube_id }}',
+            events: {
+                'onReady': onPlayerReady,
+                'onStateChange': onPlayerStateChange
+            }
+        });
+    }
+
+    function onPlayerReady(event) {
+        // Indicamos en donde iniciar el video
+        // Esto en caso de que el video se haya comenzado a ver y no se terminó.
+        if({{video.video_current_time}} > 0){
+            player.seekTo( {{ video.video_current_time }} )
+        }
+
+        // Verificamos cada 10 segundos el tiempo que está el reproductor
+        setInterval(checkCurrentTime, 7000);  // 7000 ms = 7 segundos
+    }
+
+    function onPlayerStateChange(event) {
+        //
+    }
+
+    function checkCurrentTime() {
+        if (player.getPlayerState() === YT.PlayerState.PLAYING) {
+            currentSeconds = player.getCurrentTime();
+            // Puedes almacenar 'currentSeconds' en una estructura de datos o enviarlo al servidor
+            // console.log('Segundo actual:', currentSeconds);
+            update_video_time(currentSeconds)
+
+        }
+    }
+
+    function update_video_time(time){
+        url = '/courses/video/{{video.id}}/' + time +'/'
+        fetch(url, {
+            method: 'GET',
+            headers: {
+              'Accept': 'application/json',
+              'X-Requested-With': 'XMLHttpRequest',
+            }
+        })
+        .then(response => {
+            response.json()
+        })
+        .then(data => {
+            console.log(data)
+        })
+        .catch(error => {
+            console.log(error)
+        })
+    }
+</script>
+{% endblock %}

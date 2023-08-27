@@ -1,0 +1,13 @@
+{% extends 'layouts/app.html' %}
+
+{% block content %}
+    <h5>Progreso:</h5>
+    <progress class="uk-progress" value="{{ course.percentage }}" max="100"></progress>
+    {{ course.percentage }}
+
+    <p>Video Actual: {{ course.current_video }}</p>
+
+    {% for video in course.video_set.all %}
+        <a href="{% url 'courses.video' id=video.id %}"><p>{{ video.video_number  }} - {{video.name}} {% if video.is_watched %}<span class="uk-text-primary"> visto </span> {% endif %}</p></a>
+    {% endfor %}
+{% endblock %}
