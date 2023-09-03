@@ -52,7 +52,7 @@ def add(request) -> redirect:
     lista.save()
     videos = playlist.videos
     for i, video in enumerate(videos, start=1):
-        time = datetime.timedelta(days =-1, seconds = video.length)
+        time = datetime.timedelta(days = 0, seconds = video.length)
         _video = Video(
             lista = lista,
             name = video.title,
@@ -75,8 +75,24 @@ def list(request, id) -> render:
 def video(request, id) -> render:
     # OBTENEMOS EL VIDEO QUE QUEREMOS VISUALIZAR Y LO ENVIAMOS A LA VISTA
     video = Video.objects.get(id=id)
+
+    # DECLARAMOS LAS VARIABLES NULA, BUSCAMOS SI HAY UN SIGUIENTE VIDEO DE ESA LISTA Y VIDEO PREVIO
+    next_video_id = None
+    previus_video_id = None
+    if video.video_number != video.lista.num_videos:
+        next_video_id = Video.objects.filter(
+            lista=video.lista,
+            video_number=(video.video_number + 1)
+        ).first().id
+    if video.video_number is not 1:
+        previus_video_id = Video.objects.filter(
+            lista=video.lista,
+            video_number=(video.video_number - 1)
+        ).first().id
     context = {
-        'video': video
+        'video': video,
+        'next': next_video_id,
+        'previus': previus_video_id
     }
     return render(request, 'courses/video.html', context)
 

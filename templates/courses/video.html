@@ -2,7 +2,29 @@
 
 {% block content %}
     <br>
-    <div id="player"></div>
+    <div uk-grid>
+        <div class="uk-width-1-2">
+            <div id="player"></div>
+        </div>
+        <div class="uk-width-1-2">
+            <progress class="uk-progress" value="{{video.percentage}}" max="100"></progress>
+            {% if previus %}
+                <button type="button" class="uk-button uk-button-default"
+                        name="previus" value="Video Anterior"
+                        onclick="window.location.href='{% url "courses.video" id=previus %}'">
+                        Anterior
+                </button>
+            {% endif %}
+            {% if next %}
+                <button type="button" class="uk-button uk-button-primary"
+                        name="next" value="Proximo video"
+                        onclick="window.location.href='{% url "courses.video" id=next %}'">
+                        Siguiente
+                </button>
+            {% endif %}
+            <p>total de segundos: {{ video.video_time }}</p>
+        </div>
+    </div>
     <br>
 {% endblock %}
 

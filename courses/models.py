@@ -11,8 +11,8 @@ class Lista(models.Model):
 
     def percentage(self):
         # CALCULAMOS EL PROGRESO EN PORCENTAJE DE UNA LISTA DE VIDEOS
-        total_percentege = (self.current_video / self.num_videos) * 100
-        return total_percentege
+        total_percentage = (self.current_video / self.num_videos) * 100
+        return total_percentage
 
     def __str__(self):
         return self.name
@@ -34,6 +34,12 @@ class Video(models.Model):
     is_watched = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+
+    def percentage(self):
+        # CALCULAMOS EL PROGRESO EN PORCENTAJE DE UNA LISTA DE VIDEOS
+        total_seconds = self.video_time.total_seconds()
+        total_percentage = (self.video_current_time / total_seconds) * 100
+        return total_percentage
 
     def __str__(self):
         return self.name

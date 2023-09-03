@@ -32,7 +32,7 @@
 
     </div>
 
-
+    <br>
 {% endblock %}
 
 {% block script %}
@@ -57,11 +57,14 @@
             if (data.playlist == 'ok'){
               youtubeInformationDiv.innerHTML = `
                   <form action="{% url 'courses.add' %}" method="GET">
-                      <input type="text" name="url" value=${urlValue}>
+                      <article class="uk-article">
+                          <h1 class="uk-article-title">${data.title}</h1>
+                      </article>
+                      <input type="text" name="url" hidden value=${urlValue}>
                       <p>Playlist: ${data.title}</p>
                       <p>Número de videos: ${data.num_videos}</p>
                       <p>Propietario: ${data.owner}</p>
-                      <button type="submit" name="button">Enviar</button>
+                      <button type="submit" name="button" class="uk-button uk-button-primary">Enviar</button>
                   </form>
               `;
             }else {
