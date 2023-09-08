@@ -2,6 +2,9 @@
 
 {% block content %}
     <h4>Cursos registrados</h4>
+    {% if courses.len is empty %}
+        <h1>No hay cursos registrados</h1>
+    {% endif %}
     <table class="uk-table uk-table-small uk-table-divider">
         <caption></caption>
         <tbody>
