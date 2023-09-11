@@ -84,7 +84,7 @@ def video(request, id) -> render:
             lista=video.lista,
             video_number=(video.video_number + 1)
         ).first().id
-    if video.video_number is not 1:
+    if video.video_number != 1:
         previus_video_id = Video.objects.filter(
             lista=video.lista,
             video_number=(video.video_number - 1)
@@ -100,8 +100,13 @@ def update_time_view(request, video_id, new_time) -> JsonResponse:
     # GUARDAMOS EL TIEMPO EN EL QUE EL VIDEO VA
     video = Video.objects.get(id=video_id)
     video.video_current_time = int(float(new_time))
+
+    duration = video.video_time.total_seconds()
+    if (video.video_current_time - duration) < 7:
+        video.lista.current_video = video.video_number
+        video.is_watched = True
+    
     video.save()
-    print('ESTOY DENTRO DE LA FUNCION')
     data = {
         'ok': 'ok'
     }

@@ -5,20 +5,13 @@
     {% if courses.len is empty %}
         <h1>No hay cursos registrados</h1>
     {% endif %}
-    <table class="uk-table uk-table-small uk-table-divider">
-        <caption></caption>
-        <tbody>
-        {% for course in courses %}
-            <tr>
-              <td class="uk-table-shrink"><a href="{% url 'courses.list' id=course.id %}">{{ course }}</a></td>
-              <td class="uk-table-shrink">
-                  <progress class="uk-progress" value="{{ course.percentage }}" max="100"></progress>
-              </td>
-              <td class="uk-table-shrink">{{ course.num_videos }}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    {% for course in courses %}
+        <div class="uk-grid-small" uk-grid>
+            <div class="uk-width-expand"  uk-leader><a href="{% url 'courses.list' id=course.id %}">{{ course }}</a></div>
+            <div>{{ course.num_videos }}</div>
+        </div>
+    {% endfor %}
+    <div class="uk-hr"></div>
     <form class="uk-form-horizontal uk-margin-large">
         <fieldset class="uk-fieldset">
             <div class="uk-margin">
